@@ -10,22 +10,22 @@ using Hotkeys;
 
 namespace Note_Taker
 {
-    public partial class Form1 : Form
+    public partial class NoteTaker_Form : Form
     {
 
         private Hotkeys.GlobalHotkey ghk;
 
 
-        public Form1()
+        public NoteTaker_Form()
         {
             InitializeComponent();
-            ghk = new Hotkeys.GlobalHotkey(Constants.WIN , Keys.N, this);
+            ghk = new Hotkeys.GlobalHotkey(Constants.WIN , Keys.NumPad0, this);
+            this.ShowInTaskbar = false;
         }
 
         private void HandleHotkey()
         {
             this.Visible = true;
-            this.Activate();
             this.input_textbox.Focus();
         }
         protected override void WndProc(ref Message m)
@@ -35,16 +35,16 @@ namespace Note_Taker
             base.WndProc(ref m);
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void NoteTaker_Form_Load(object sender, EventArgs e)
         {
-             System.Diagnostics.Debug.WriteLine("Trying to register WIN+N");
+             System.Diagnostics.Debug.WriteLine("Trying to register hotkey");
 	            if (ghk.Register())
                     System.Diagnostics.Debug.WriteLine("Hotkey registered.");
 	            else
-                    System.Diagnostics.Debug.WriteLine("Hotkey failed to register");            
+                    System.Diagnostics.Debug.WriteLine("Hotkey failed to register");   
         }
 
-        private void Form1_FormClosing(object sender, EventArgs e)
+        private void NoteTaker_Form_FormClosing(object sender, EventArgs e)
         {
             if (!ghk.Unregiser())
                 MessageBox.Show("Hotkey failed to unregister!");
@@ -62,6 +62,20 @@ namespace Note_Taker
                 //Hide form
                 this.Visible = false;
             }
+        }
+
+        private void NoteTaker_Form_Hide(object sender, EventArgs e)
+        {
+            if (this.Visible == false)
+            {
+                notifyIcon.Visible = true;
+                this.ShowInTaskbar = false;
+            }
+        }
+
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.Visible = true;
         }
 
         private void LogNote(string notetext)
